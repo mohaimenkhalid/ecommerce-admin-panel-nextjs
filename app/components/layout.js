@@ -1,10 +1,14 @@
-"use client"
+
 
 import { useSession, signIn, signOut } from "next-auth/react"
 import Navbar from "@/app/components/Navbar";
+import Loader from "@/app/components/Loader";
 
 export default function Layout({children}) {
-    const { data: session } = useSession()
+    const { data: session, status } = useSession()
+    if (status === "loading") {
+        return <Loader />
+    }
     if (session) {
         return (
             <div className="bg-blue-900 w-screen h-screen flex">
