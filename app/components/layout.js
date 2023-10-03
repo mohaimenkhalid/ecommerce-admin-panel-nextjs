@@ -9,7 +9,7 @@ export default function Layout({children}) {
         return (
             <div className="bg-blue-900 w-screen h-screen flex">
                 <Navbar />
-                <div className="bg-white flex grow p-2 m-2 ml-0 rounded-lg">
+                <div className="bg-white w-full p-2 m-2 ml-0 rounded-lg">
                     {/*Signed in as {session.user.email} <br />*/}
                     {/*<button onClick={() => signOut()}>Sign out</button>*/}
                     {children}

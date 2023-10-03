@@ -16,12 +16,18 @@
   }
 }
 
-/*body {*/
-/*  color: rgb(var(--foreground-rgb));*/
-/*  background: linear-gradient(*/
-/*      to bottom,*/
-/*      transparent,*/
-/*      rgb(var(--background-end-rgb))*/
-/*    )*/
-/*    rgb(var(--background-start-rgb));*/
-/*}*/
+input, textarea {
+  @apply border border-gray-500 rounded-md p-1 w-full
+}
+
+input:focus, textarea:focus {
+  @apply border-gray-900
+}
+
+label {
+  @apply font-bold
+}
+
+.btn-primary {
+  @apply bg-blue-900 text-white px-2 py-1 rounded-md
+}

@@ -43,7 +43,7 @@ const ActiveLink = ({menu}) => {
     const activeLink = inactiveLink+' bg-white text-blue-900 rounded-l-lg'
 
     const pathname  =  usePathname()
-    const isActiveLink= pathname === menu.path
+    const isActiveLink = pathname === menu.path
     return (
         <Link href={menu.path} className={isActiveLink ? activeLink : inactiveLink}>
             {menu.icon}
