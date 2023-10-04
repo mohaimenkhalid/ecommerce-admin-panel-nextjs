@@ -23,7 +23,7 @@ export default function ProductPage() {
 
     return (
         <>
-            <div className="mt-4 flex justify-between bg-gray-200 px-2 py-4 rounded-xl">
+            <div className="mt-4 flex justify-between card">
                 <h1 className="text-2xl font-bold">Product List</h1>
                 <Link href={'/products/add'} className="bg-blue-900 text-white p-2 rounded-lg">Add New Product</Link>
             </div>
@@ -45,7 +45,7 @@ export default function ProductPage() {
                         ? (
                             <tr>
                                 <td colSpan="5" className="text-center h-60">
-                                    <LoadingData />
+                                    <LoadingData/>
                                 </td>
                             </tr>
                         ) :
@@ -61,15 +61,13 @@ export default function ProductPage() {
                                         <td className="border border-slate-300">{product.price}</td>
                                         <td className="border border-slate-300">{product.description}</td>
                                         <td className="border border-slate-300">
-                                            <button className="btn-primary mr-1">Edit</button>
+                                            <Link href={'/products/edit/'+product._id} className="btn-primary mr-1">Edit</Link>
                                             <button className="btn-danger">Delete</button>
                                         </td>
                                     </tr>
                                 )
                             })
                     }
-
-
                     </tbody>
                 </table>
             </div>

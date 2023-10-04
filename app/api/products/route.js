@@ -10,8 +10,23 @@ export async function POST(request) {
     return NextResponse.json(productDocument, {status: 200})
 }
 
-export async function GET() {
+export async function GET(request) {
     await mongooseConnect()
-    const productDocument = await Product.find()
+    let productDocument;
+    const { searchParams } = new URL(request.url)
+    const id = searchParams.get('id')
+    if(id) {
+         productDocument = await Product.findOne({_id: id})
+    } else {
+         productDocument = await Product.find()
+    }
+    return NextResponse.json(productDocument, {status: 200})
+}
+
+export async function PUT(request) {
+    await mongooseConnect()
+    const requestBody = await request.json()
+    const {_id, ...restPayload} = requestBody
+    const productDocument = await Product.updateOne({_id}, {...restPayload})
     return NextResponse.json(productDocument, {status: 200})
 }
