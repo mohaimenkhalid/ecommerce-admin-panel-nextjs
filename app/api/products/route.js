@@ -30,3 +30,15 @@ export async function PUT(request) {
     const productDocument = await Product.updateOne({_id}, {...restPayload})
     return NextResponse.json(productDocument, {status: 200})
 }
+
+export async function DELETE(request) {
+    await mongooseConnect()
+    const { searchParams } = new URL(request.url)
+    const id = searchParams.get('id')
+    const findProduct = await Product.findOne({_id: id})
+    if(findProduct) {
+        await Product.deleteOne({_id: findProduct._id})
+        return NextResponse.json({message: 'product deleted successfully!'}, {status: 200})
+    }
+    return NextResponse.json({message: 'Product not found'}, {status: 400})
+}
