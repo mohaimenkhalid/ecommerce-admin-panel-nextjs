@@ -8,10 +8,11 @@ import LoadingData from "@/app/components/LoadingData";
 export default function CategoryPage() {
     const router = useRouter()
     const [loading, setLoading] = useState(false)
-    const [categoryForm, setCategoryForm] = useState({
+    const initialPayload = {
         name: '',
         parent: '',
-    })
+    }
+    const [categoryForm, setCategoryForm] = useState({...initialPayload})
     const [categories, setCategories] = useState()
 
     const handleChange = (e) => {
@@ -33,7 +34,10 @@ export default function CategoryPage() {
             .catch(err => {
                 console.log(err)
             })
-            .finally(() => setLoading(false))
+            .finally(() => {
+                setCategoryForm({...initialPayload})
+                setLoading(false)
+            })
     }
 
     const getCategoryList = () => {
@@ -52,9 +56,21 @@ export default function CategoryPage() {
         getCategoryList()
     }, [])
 
+    const editInitialize = (product) => {
+        let currentProduct = {};
+        currentProduct.name = product.name
+        currentProduct._id = product._id
+        if (product.parent) {
+            currentProduct.parent = product.parent._id
+        } else {
+            currentProduct.parent = ""
+        }
+        setCategoryForm({...categoryForm, ...currentProduct})
+    }
 
     return (
         <div className="px-6 w-full">
+            {JSON.stringify(categoryForm)}
             {/*<div className="border border-gray-200 shadow rounded-md p-4 w-full">*/}
             {/*    <div className="animate-pulse flex space-x-4">*/}
             {/*        <div className="flex-1 space-y-6 py-1">*/}
@@ -74,14 +90,15 @@ export default function CategoryPage() {
             <form onSubmit={createCategory} className="card relative items-center">
                 <div className="mb-2">
                     <label>Category Name:</label>
-                    <input name="name" type="text" value={categoryForm.title} onChange={handleChange} placeholder="category name"/>
+                    <input name="name" type="text" value={categoryForm.name} onChange={handleChange} placeholder="category name"/>
                 </div>
                 <div className="mb-2">
                     <label>Parent:</label>
                     <select
                         disabled={loading}
                         name="parent" value={categoryForm.parent} onChange={handleChange}>
-                        <option value={null}>Select parent category</option>
+                        {loading && <option value={null}>loading...</option>}
+                        <option value="">Select parent category</option>
                         {
                             categories && categories.filter(i => !i.parent).map((category, index) => {
                                 return (<option value={category._id} key={index}>{category.name}</option>)
@@ -100,7 +117,7 @@ export default function CategoryPage() {
                                 </svg>
                             </> :
                             <span>
-                                {categoryForm?._id ? 'Update Product' : 'Add'}
+                                {categoryForm?._id ? 'Update' : 'Add'}
                             </span>
                         }
                     </button>
@@ -137,14 +154,7 @@ export default function CategoryPage() {
                                         <td className="border border-slate-300">{category.name}</td>
                                         <td className="border border-slate-300">{category?.parent?.name}</td>
                                         <td className="border border-slate-300">
-                                            {/*<Link href={'/categorys/edit/'+category._id} className="btn-primary mr-1">Edit</Link>*/}
-                                            {/*<button*/}
-                                            {/*    className={loadingDeleteState ? 'opacity-20 btn-danger': 'btn-danger'}*/}
-                                            {/*    onClick={() => onDeleteConfirmation(category)}*/}
-                                            {/*    disabled={loadingDeleteState}*/}
-                                            {/*>*/}
-                                            {/*    Delete*/}
-                                            {/*</button>*/}
+                                            <button onClick={() => editInitialize(category)} className="btn-primary">Edit</button>
                                         </td>
                                     </tr>
                                 )
