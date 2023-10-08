@@ -3,10 +3,13 @@ import mongoose, {model, models, Schema} from "mongoose";
 const categorySchema = new Schema({
     name: {
         type: String,
-        require: true
+        require: true,
+        unique: true
     },
     parent: {
-        type: mongoose.Types.ObjectId
+        type: mongoose.Types.ObjectId,
+        ref: 'Category',
+        set: v => v === "" ? null : v
     }
 })
 
