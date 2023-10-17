@@ -8,7 +8,6 @@ export async function GET(request) {
     return NextResponse.json(categoryDocument, {status: 200})
 }
 
-
 export async function POST(request) {
     await mongooseConnect()
     const requestBody = await request.json()

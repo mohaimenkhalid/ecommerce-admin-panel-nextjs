@@ -4,7 +4,7 @@ const categorySchema = new Schema({
     name: {
         type: String,
         require: true,
-        unique: [true, "skjfhkajhfawf"]
+        unique: true
     },
     parent: {
         type: mongoose.Types.ObjectId,

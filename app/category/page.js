@@ -1,12 +1,13 @@
 "use client"
 import {useEffect, useState} from "react";
 import axios from "axios";
-import { useRouter } from 'next/navigation'
 import toast from 'react-hot-toast';
 import LoadingData from "@/app/components/LoadingData";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as Yup from "yup";
 
 export default function CategoryPage() {
-    const router = useRouter()
     const [loading, setLoading] = useState(false)
     const [loadingCreate, setLoadingCreate] = useState(false)
     const initialPayload = {
@@ -15,6 +16,17 @@ export default function CategoryPage() {
     }
     const [categoryForm, setCategoryForm] = useState({...initialPayload})
     const [categories, setCategories] = useState()
+
+
+    const validationSchema = Yup.object().shape({
+        name: Yup.string().required("Name is required"),
+    });
+
+    const formOptions = { resolver: yupResolver(validationSchema) };
+    const { register, handleSubmit, formState } = useForm(formOptions);
+    const { errors } = formState
+
+
 
     const handleChange = (e) => {
         const {name, value} = e.target
@@ -84,8 +96,7 @@ export default function CategoryPage() {
         setCategoryForm({...categoryForm, ...currentProduct})
     }
 
-    const initializeAction = (e) => {
-        e.preventDefault()
+    const initializeAction = () => {
         if(categoryForm?._id) {
             updateCategory()
         } else {
@@ -95,7 +106,6 @@ export default function CategoryPage() {
 
     return (
         <div className="px-6 w-full">
-            {JSON.stringify(categoryForm)}
             {/*<div className="border border-gray-200 shadow rounded-md p-4 w-full">*/}
             {/*    <div className="animate-pulse flex space-x-4">*/}
             {/*        <div className="flex-1 space-y-6 py-1">*/}
@@ -112,10 +122,11 @@ export default function CategoryPage() {
             <div className="card my-3 bg-gray-200 px-2 py-4 text-xl font-bold rounded-md">
                 Category
             </div>
-            <form onSubmit={initializeAction} className="card relative items-center">
+            <form onSubmit={handleSubmit(initializeAction)} className="card relative items-center">
                 <div className="mb-2">
                     <label>Category Name:</label>
-                    <input name="name" type="text" value={categoryForm.name} onChange={handleChange} placeholder="category name"/>
+                    <input  {...register("name")} name="name" type="text" value={categoryForm.name} onChange={handleChange} placeholder="category name"/>
+                    <small className="text-red-500">{errors?.name?.message}</small>
                 </div>
                 <div className="mb-2">
                     <label>Parent:</label>
