@@ -8,6 +8,7 @@ import LoadingData from "@/app/components/LoadingData";
 export default function CategoryPage() {
     const router = useRouter()
     const [loading, setLoading] = useState(false)
+    const [loadingCreate, setLoadingCreate] = useState(false)
     const initialPayload = {
         name: '',
         parent: '',
@@ -23,9 +24,8 @@ export default function CategoryPage() {
         })
     }
 
-    const createCategory = async (e) => {
-        e.preventDefault()
-        setLoading(true)
+    const createCategory = () => {
+        setLoadingCreate(true)
         axios.post('/api/category', categoryForm)
             .then(res => {
                 toast.success('Category added successfully!');
@@ -36,7 +36,23 @@ export default function CategoryPage() {
             })
             .finally(() => {
                 setCategoryForm({...initialPayload})
-                setLoading(false)
+                setLoadingCreate(false)
+            })
+    }
+
+    const updateCategory = () => {
+        setLoadingCreate(true)
+        axios.put('/api/category', categoryForm)
+            .then(res => {
+                toast.success('Category Updated successfully!');
+                getCategoryList()
+            })
+            .catch(err => {
+                console.log(err)
+            })
+            .finally(() => {
+                setCategoryForm({...initialPayload})
+                setLoadingCreate(false)
             })
     }
 
@@ -68,6 +84,15 @@ export default function CategoryPage() {
         setCategoryForm({...categoryForm, ...currentProduct})
     }
 
+    const initializeAction = (e) => {
+        e.preventDefault()
+        if(categoryForm?._id) {
+            updateCategory()
+        } else {
+            createCategory()
+        }
+    }
+
     return (
         <div className="px-6 w-full">
             {JSON.stringify(categoryForm)}
@@ -87,7 +112,7 @@ export default function CategoryPage() {
             <div className="card my-3 bg-gray-200 px-2 py-4 text-xl font-bold rounded-md">
                 Category
             </div>
-            <form onSubmit={createCategory} className="card relative items-center">
+            <form onSubmit={initializeAction} className="card relative items-center">
                 <div className="mb-2">
                     <label>Category Name:</label>
                     <input name="name" type="text" value={categoryForm.name} onChange={handleChange} placeholder="category name"/>
@@ -108,8 +133,10 @@ export default function CategoryPage() {
                     </select>
                 </div>
                 <div className="mt-4">
-                    <button type="submit" className={loading ? 'btn-primary opacity-50' : 'btn-primary '}>
-                        {loading ?
+                    <button
+                        disabled={loadingCreate}
+                        type="submit" className={loadingCreate ? 'btn-primary opacity-50' : 'btn-primary '}>
+                        {loadingCreate ?
                             <>
                                 <svg aria-hidden="true" role="status" className="inline w-4 h-4 mr-3 text-white animate-spin" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="#E5E7EB"/>
@@ -127,12 +154,12 @@ export default function CategoryPage() {
             <div className="card mt-5">
                 <table className="border-collapse border border-slate-400 w-full">
                     <thead>
-                    <tr>
-                        <th className="border border-slate-300">SI</th>
-                        <th className="border border-slate-300">name</th>
-                        <th className="border border-slate-300">Parent</th>
-                        <th className="border border-slate-300 w-[20%]">Action</th>
-                    </tr>
+                        <tr>
+                            <th className="border border-slate-300">SI</th>
+                            <th className="border border-slate-300">name</th>
+                            <th className="border border-slate-300">Parent</th>
+                            <th className="border border-slate-300 w-[20%]">Action</th>
+                        </tr>
                     </thead>
                     <tbody>
                     {loading

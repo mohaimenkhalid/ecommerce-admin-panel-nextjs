@@ -15,3 +15,13 @@ export async function POST(request) {
     const categoryDocument = Category.create({...requestBody})
     return NextResponse.json(categoryDocument, {status: 200})
 }
+
+export async function PUT(request) {
+    await mongooseConnect()
+    const requestBody = await request.json()
+    const {_id, ...restFormBody} = requestBody;
+    console.log(_id, restFormBody)
+    const categoryDocument = await Category.updateOne({_id}, {...restFormBody})
+    return NextResponse.json(categoryDocument, {status: 200})
+
+}
